@@ -1,0 +1,182 @@
+/* A house: dark velvet, a lamp-amber rule, cream type.
+   The sprocket gutter is decoration. The engine still owns the keys. */
+:root {
+  --pa-bg: #1c1410;
+  --pa-fg: #f6efe4;
+  --pa-muted: #b7a898;
+  --pa-accent: #e6a15c;
+  --pa-card: #2a211c;
+  --pa-card-fg: #f6efe4;
+  --pa-line: rgba(230, 161, 92, .38);
+  --pa-overlay: rgba(12, 8, 6, .78);
+  --pa-font: Palatino, "Palatino Linotype", Georgia, serif;
+  --pa-font-display: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  --pa-slide: #140e0b;
+  --pa-shadow: 0 28px 70px rgba(0, 0, 0, .45);
+  --pa-radius: 2px;
+  --pa-danger: #e7b2a4;
+}
+
+.pa-frame { border-radius: 0; }
+.pa-progress { height: 4px; background: rgba(246, 239, 228, .08); }
+.pa-progress span { background: #e6a15c; }
+
+.pa-slide {
+  background:
+    radial-gradient(ellipse at 70% 0%, rgba(230, 161, 92, .14), transparent 46%),
+    #140e0b;
+}
+
+.hoc {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 64px 88px 52px 108px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  color: #f6efe4;
+}
+
+.hoc::before {
+  content: "";
+  position: absolute;
+  left: 36px;
+  top: 48px;
+  bottom: 48px;
+  width: 28px;
+  background:
+    radial-gradient(circle at 50% 14px, #0c0806 6px, transparent 7px) 0 0 / 28px 46px repeat-y;
+  opacity: .9;
+}
+
+.hoc-eye {
+  margin: 0 0 18px;
+  font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+  font-size: 16px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #e6a15c;
+}
+
+.hoc-title {
+  margin: 0;
+  max-width: 16ch;
+  font-family: "Iowan Old Style", Palatino, Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 78px;
+  line-height: .98;
+  letter-spacing: -.02em;
+}
+
+.hoc-sub {
+  margin: 22px 0 0;
+  max-width: 28ch;
+  font-size: 30px;
+  line-height: 1.3;
+  color: rgba(246, 239, 228, .82);
+}
+
+.hoc-open { justify-content: flex-end; padding-bottom: 120px; }
+.hoc-open .hoc-title { font-size: 104px; max-width: 12ch; }
+.hoc-open .hoc-foot {
+  position: absolute;
+  left: 108px;
+  right: 88px;
+  bottom: 48px;
+}
+
+.hoc-section { justify-content: center; }
+.hoc-section .hoc-title { font-size: 92px; max-width: 14ch; }
+
+.hoc-list {
+  list-style: none;
+  margin: 42px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 22px;
+  max-width: 1040px;
+}
+
+.hoc-list li {
+  margin: 0;
+  padding-left: 28px;
+  border-left: 3px solid #e6a15c;
+  font-size: 32px;
+  line-height: 1.28;
+}
+
+.hoc-times .hoc-title { font-size: 64px; }
+
+.hoc-rail {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0 0 0 8px;
+  display: grid;
+  gap: 14px;
+  max-width: 1100px;
+}
+
+.hoc-rail li {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 22px;
+  align-items: baseline;
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+.hoc-rail b {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-weight: 600;
+  font-style: normal;
+  color: #e6a15c;
+  letter-spacing: .04em;
+}
+
+.hoc-media { min-height: 0; }
+.hoc-media .hoc-title { font-size: 60px; }
+.hoc-media .hoc-foot { margin-top: 12px; }
+
+.hoc-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 18px;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(230, 161, 92, .55);
+}
+
+.hoc-stage video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.hoc-stage .pa-video-hint { bottom: 92px; }
+
+.hoc-cap {
+  margin: 12px 0 0;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 15px;
+  letter-spacing: .03em;
+  color: #b7a898;
+}
+
+.hoc-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(230, 161, 92, .4);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 14px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(246, 239, 228, .62);
+}

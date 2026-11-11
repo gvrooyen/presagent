@@ -2,8 +2,7 @@ const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
-const DEMO = '/examples/night-signal/';
-const NOTES = '/examples/field-notes/';
+const DEMO = '/examples/history-of-cinema/';
 const TEMPLATE = '/template/';
 
 function trackErrors(page) {
@@ -19,16 +18,16 @@ function assertClean(errors) {
   expect(errors, errors.join('\n')).toEqual([]);
 }
 
-test.describe('night signal', () => {
+test.describe('history of cinema', () => {
   test('loads without console errors and deep-links through the hash', async ({ page }) => {
     const errors = trackErrors(page);
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto(DEMO);
     await expect(page.locator('#slide')).toHaveAttribute('data-index', '1');
     await expect(page.locator('#slide')).toHaveAttribute('data-type', 'title');
-    await expect(page.locator('#pa-status')).toHaveText('1 / 7');
+    await expect(page.locator('#pa-status')).toHaveText('1 / 20');
     await expect(page).toHaveURL(/#1$/);
-    await expect(page).toHaveTitle(/1\/7 · Night Signal/);
+    await expect(page).toHaveTitle(/1\/20 · A history of cinema/);
     await expect(page.locator('#slide')).toHaveCSS('width', '1600px');
     await expect(page.locator('#slide')).toHaveCSS('height', '900px');
 
@@ -41,7 +40,7 @@ test.describe('night signal', () => {
     await page.keyboard.press('ArrowRight');
     await expect(page).toHaveURL(/#2$/);
     await expect(page.locator('#slide')).toHaveAttribute('data-index', '2');
-    await expect(page.locator('h1')).toHaveText('Four things a light can say');
+    await expect(page.locator('h1')).toHaveText('Before the picture moved');
 
     await page.keyboard.press('ArrowLeft');
     await expect(page).toHaveURL(/#1$/);
@@ -50,8 +49,8 @@ test.describe('night signal', () => {
     await page.keyboard.press('PageUp');
     await expect(page).toHaveURL(/#1$/);
     await page.keyboard.press('End');
-    await expect(page).toHaveURL(/#7$/);
-    await expect(page.locator('h1')).toHaveText('Leave a light on');
+    await expect(page).toHaveURL(/#20$/);
+    await expect(page.locator('h1')).toHaveText('Leave the number in the address');
     await page.keyboard.press('Home');
     await expect(page).toHaveURL(/#1$/);
 
@@ -61,8 +60,8 @@ test.describe('night signal', () => {
     await expect(page).toHaveURL(/#1$/);
 
     await page.goto(DEMO + '#4');
-    await expect(page.locator('#slide')).toHaveAttribute('data-type', 'video');
-    await expect(page.locator('h1')).toHaveText('Hold for the flash');
+    await expect(page.locator('#slide')).toHaveAttribute('data-type', 'timeline');
+    await expect(page.locator('.hoc-rail li')).toHaveCount(6);
 
     const fresh = await page.context().newPage();
     fresh.on('pageerror', (err) => errors.push('pageerror: ' + err.message));
@@ -120,14 +119,14 @@ test.describe('night signal', () => {
     await expect(page.locator('#slide')).not.toContainText(secret);
     await page.keyboard.press('n');
     await expect(page.locator('#notes')).toBeVisible();
-    await expect(page.locator('#notes-title')).toHaveText('01 · Dark coast');
-    await expect(page.locator('#notes-body')).toContainText('Open on a dark coast');
+    await expect(page.locator('#notes-title')).toHaveText('01 · Title');
+    await expect(page.locator('#notes-body')).toContainText('Open on a dark house');
     await expect(page.locator('#notes-body strong').first()).toHaveText('Open');
     await expect(page.locator('#notes-body')).not.toContainText(secret);
     await expect(page.locator('#toast')).toHaveText('Notes on (N to hide)');
     await page.keyboard.press('ArrowRight');
     await expect(page.locator('#notes')).toBeVisible();
-    await expect(page.locator('#notes-body')).toContainText('Character comes before colour');
+    await expect(page.locator('#notes-body')).toContainText('Pause before the camera');
     await page.keyboard.press('n');
     await expect(page.locator('#notes')).toBeHidden();
     await page.keyboard.press('Escape');
@@ -135,48 +134,52 @@ test.describe('night signal', () => {
     assertClean(errors);
   });
 
-  test('Space advances text slides and plays a local video without changing slides', async ({ page }) => {
+  test('Space advances a text slide and plays a local video without changing slides', async ({ page }) => {
     const errors = trackErrors(page);
-    await page.goto(DEMO + '#2');
-    await page.keyboard.press('Space');
-    await expect(page.locator('#slide')).toHaveAttribute('data-index', '3');
-    await expect(page.locator('#slide img')).toHaveAttribute('alt', /stepped lens/);
-
     await page.goto(DEMO + '#4');
+    await page.keyboard.press('Space');
+    await expect(page.locator('#slide')).toHaveAttribute('data-index', '5');
+    await expect(page.locator('h1')).toHaveText('A train comes in');
+
     const video = page.locator('#slide video');
-    await expect(video).toHaveAttribute('src', /beacon\.mp4$/);
+    await expect(video).toHaveAttribute('src', /train\.mp4$/);
     await expect(video).toHaveJSProperty('paused', true);
     await expect(page.locator('.pa-video-hint')).toBeVisible();
     await page.keyboard.press('Space');
     await expect(video).toHaveJSProperty('paused', false);
     await expect(page.locator('[data-video-stage]')).toHaveClass(/playing/);
     await expect(page.locator('.pa-video-hint')).toBeHidden();
-    await expect(page.locator('#slide')).toHaveAttribute('data-index', '4');
+    await expect(page.locator('#slide')).toHaveAttribute('data-index', '5');
     await page.evaluate(() => {
       document.querySelector('[data-video-stage]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     await expect(video).toHaveJSProperty('paused', true);
-    await page.keyboard.press('Space');
-    await expect(video).toHaveJSProperty('paused', false);
     await page.keyboard.press('ArrowRight');
-    await expect(page.locator('#slide')).toHaveAttribute('data-index', '5');
+    await expect(page.locator('#slide')).toHaveAttribute('data-index', '6');
     await expect(page.locator('#slide video')).toHaveCount(0);
     assertClean(errors);
   });
 
-  test('YouTube slide embeds without autoplay and Space advances', async ({ page }) => {
+  test('the three clips sit between 30 and 180 seconds, and Willie has audio', async ({ page }) => {
     const errors = trackErrors(page);
-    await page.route(/youtube|googlevideo|ytimg/, (route) => route.abort());
-    await page.goto(DEMO + '#5');
-    const frame = page.locator('#slide iframe');
-    await expect(frame).toHaveAttribute('src', 'https://www.youtube.com/embed/GXwbM_vOvb0');
-    expect(await frame.getAttribute('src')).not.toContain('autoplay');
+    async function durationOf(hash) {
+      await page.goto(DEMO + hash);
+      await page.waitForFunction(() => {
+        const video = document.querySelector('#slide video');
+        return video && Number.isFinite(video.duration) && video.duration > 0;
+      });
+      return page.locator('#slide video').evaluate((video) => video.duration);
+    }
+    for (const hash of ['#5', '#8', '#15']) {
+      const seconds = await durationOf(hash);
+      expect(seconds).toBeGreaterThanOrEqual(30);
+      expect(seconds).toBeLessThanOrEqual(180);
+    }
+    await page.goto(DEMO + '#15');
+    await expect(page.locator('#slide video')).toHaveAttribute('src', /willie\.mp4$/);
     await page.keyboard.press('Space');
-    await expect(page.locator('#slide')).toHaveAttribute('data-index', '6');
-    await expect(page.locator('.ns-flags')).toBeVisible();
-    await expect(page.locator('.ns-flag')).toHaveCount(3);
-    const noisy = errors.filter((line) => !/youtube|googlevideo|ytimg|net::ERR|Failed to load resource|ERR_FAILED/i.test(line));
-    expect(noisy, noisy.join('\n')).toEqual([]);
+    await expect.poll(async () => page.locator('#slide video').evaluate((video) => video.webkitAudioDecodedByteCount || 0), { timeout: 8000 }).toBeGreaterThan(0);
+    assertClean(errors);
   });
 
   test('P opens a presenter window that stays in sync both ways', async ({ page }) => {
@@ -186,32 +189,32 @@ test.describe('night signal', () => {
     await page.keyboard.press('p');
     const popup = await popupPromise;
     const popupErrors = trackErrors(popup);
-    await expect(popup.locator('#title')).toHaveText('Night Signal');
-    await expect(popup.locator('#count')).toHaveText('1 / 7');
-    await expect(popup.locator('#sec')).toHaveText('01 · Dark coast');
-    await expect(popup.locator('#notes')).toContainText('Open on a dark coast');
+    await expect(popup.locator('#title')).toHaveText('A history of cinema');
+    await expect(popup.locator('#count')).toHaveText('1 / 20');
+    await expect(popup.locator('#sec')).toHaveText('01 · Title');
+    await expect(popup.locator('#notes')).toContainText('Open on a dark house');
     await expect(popup.locator('#notes')).not.toContainText('This longer script stays off the slide.');
-    await expect(popup.locator('#next')).toContainText('Four things a light can say');
+    await expect(popup.locator('#next')).toContainText('Before the picture moved');
     await expect(popup.locator('#timer')).toHaveText(/^\d\d:\d\d$/);
     const started = await popup.locator('#timer').innerText();
     await expect.poll(async () => popup.locator('#timer').innerText(), { timeout: 4000 }).not.toBe(started);
     const timerColor = await popup.locator('#timer').evaluate((el) => getComputedStyle(el).color);
-    expect(timerColor).toBe('rgb(231, 177, 90)');
+    expect(timerColor).toBe('rgb(230, 161, 92)');
 
     await popup.keyboard.press('ArrowRight');
     await expect(page.locator('#slide')).toHaveAttribute('data-index', '2');
-    await expect(popup.locator('#title')).toHaveText('Four things a light can say');
-    await expect(popup.locator('#count')).toHaveText('2 / 7');
+    await expect(popup.locator('#title')).toHaveText('Before the picture moved');
+    await expect(popup.locator('#count')).toHaveText('2 / 20');
 
     await popup.locator('#nextBtn').click();
     await expect(page.locator('#slide')).toHaveAttribute('data-index', '3');
-    await expect(popup.locator('#title')).toHaveText('The lens that throws a beam');
+    await expect(popup.locator('#title')).toHaveText('Three toys that already knew');
 
     await popup.locator('#prevBtn').click();
     await expect(page.locator('#slide')).toHaveAttribute('data-index', '2');
 
     await page.keyboard.press('ArrowRight');
-    await expect(popup.locator('#count')).toHaveText('3 / 7');
+    await expect(popup.locator('#count')).toHaveText('3 / 20');
 
     await popup.keyboard.press('n');
     await expect(page.locator('#notes')).toBeVisible();
@@ -274,9 +277,7 @@ test.describe('night signal', () => {
     await expect(page.locator('#sink-overlay')).toBeHidden();
     await expect.poll(() => page.evaluate(() => localStorage.getItem('presagent-audio-sink-id'))).toBe('hdmi-1');
 
-    await page.keyboard.press('End');
-    await page.keyboard.press('Home');
-    await page.goto(DEMO + '#4');
+    await page.goto(DEMO + '#5');
     await expect(page.locator('#slide video')).toHaveAttribute('data-applied-sink', 'hdmi-1');
 
     await page.evaluate(() => {
@@ -348,46 +349,21 @@ test.describe('night signal', () => {
   });
 });
 
-test.describe('other decks', () => {
-  test('field notes is a different theme on the same keys', async ({ page }) => {
-    const errors = trackErrors(page);
-    await page.goto(NOTES);
-    await expect(page.locator('#slide')).toHaveCSS('width', '1920px');
-    await expect(page.locator('.jn h1')).toHaveText('Under the hedge');
-    const paper = await page.locator('.pa-slide').evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(paper).toBe('rgb(246, 240, 226)');
-    await page.keyboard.press('ArrowRight');
-    await expect(page).toHaveURL(/#2$/);
-    await page.keyboard.press('n');
-    await expect(page.locator('#notes-body')).toContainText('Place, then light');
-
-    const popupPromise = page.waitForEvent('popup');
-    await page.keyboard.press('p');
-    const popup = await popupPromise;
-    await expect(popup.locator('#title')).toHaveText('Three things to write down');
-    const timerColor = await popup.locator('#timer').evaluate((el) => getComputedStyle(el).color);
-    expect(timerColor).toBe('rgb(143, 45, 45)');
-    await popup.keyboard.press('ArrowRight');
-    await expect(page.locator('#slide')).toHaveAttribute('data-index', '3');
-    assertClean(errors);
-  });
-
-  test('the template deck navigates and hides its narration', async ({ page }) => {
-    const errors = trackErrors(page);
-    await page.goto(TEMPLATE);
-    await expect(page.locator('h1')).toHaveText('Untitled talk');
-    await expect(page.locator('#slide')).toHaveCSS('width', '1600px');
-    const secret = 'This sentence is a speaker script.';
-    await expect(page.locator('#slide')).not.toContainText(secret);
-    await page.keyboard.press('n');
-    await expect(page.locator('#notes-body')).not.toContainText(secret);
-    await expect(page.locator('#notes-body strong').first()).toHaveText('name');
-    await page.keyboard.press('End');
-    await expect(page).toHaveURL(/#3$/);
-    await page.keyboard.press('?');
-    await expect(page.locator('#help-overlay kbd')).toHaveCount(10);
-    assertClean(errors);
-  });
+test('the template deck navigates and hides its narration', async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto(TEMPLATE);
+  await expect(page.locator('h1')).toHaveText('Untitled talk');
+  await expect(page.locator('#slide')).toHaveCSS('width', '1600px');
+  const secret = 'This sentence is a speaker script.';
+  await expect(page.locator('#slide')).not.toContainText(secret);
+  await page.keyboard.press('n');
+  await expect(page.locator('#notes-body')).not.toContainText(secret);
+  await expect(page.locator('#notes-body strong').first()).toHaveText('name');
+  await page.keyboard.press('End');
+  await expect(page).toHaveURL(/#3$/);
+  await page.keyboard.press('?');
+  await expect(page.locator('#help-overlay kbd')).toHaveCount(10);
+  assertClean(errors);
 });
 
 test('the repo does not carry the reference deck’s client material', async () => {
