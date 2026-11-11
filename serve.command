@@ -1,7 +1,7 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 PORT="${PORT:-8000}"
-URL="http://127.0.0.1:${PORT}/examples/night-signal/"
+URL="http://127.0.0.1:${PORT}/examples/history-of-cinema/"
 echo "Serving presagent on http://127.0.0.1:${PORT}/"
 echo "Demo: $URL"
 echo "Leave this window open while you present. Press Ctrl+C to stop."

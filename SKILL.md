@@ -13,7 +13,7 @@ description: >
 
 presagent is a dependency-free engine for one HTML file of slides. The engine owns behaviour. The deck owns the look. A theme may replace every colour, typeface, and piece of slide markup. It must not change the controls below.
 
-Study `examples/night-signal/` for a full deck and `examples/field-notes/` for proof that a second, unrelated theme still navigates the same way. Start a new deck from `template/`, not from an example.
+Study `examples/history-of-cinema/` for a full deck: its own type, its own CSS, and public-domain clips listed in that folder’s `CREDITS.md`. Start a new deck from `template/`, not by restyling the example.
 
 Do not copy material from a client's existing talk into this repo or into a new deck. Invent the words, or use only assets you made or that are clearly public domain or CC0, and attribute those.
 
@@ -201,7 +201,7 @@ A YouTube slide is an iframe to `https://www.youtube.com/embed/ID` with the allo
 
 - Put files in `assets/` next to `index.html` and refer to them with relative paths (`assets/clip.mp4`).
 - Prefer SVG or CSS you drew. For a photograph or a film, use something you made, or a work that is clearly public domain or CC0, and name it in the deck caption and in the README.
-- Keep a bundled video to a few megabytes. A talk-length file belongs on the static host or on YouTube, not in git. GitHub rejects very large files. The demo clip in this repo is a generated six-second file.
+- Keep a bundled video modest. A talk-length file belongs on the static host or on YouTube, not in git. GitHub rejects very large files. The cinema example trims public-domain films to between 30 and 180 seconds and lists each licence in `examples/history-of-cinema/CREDITS.md`.
 - Posters (`poster` on a video slide) avoid a black rectangle before play.
 - The engine preloads the next slide's image at low priority. It does not download every video up front.
 
