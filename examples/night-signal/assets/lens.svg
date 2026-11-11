@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="Stepped lens and beam">
+  <rect width="640" height="640" fill="#07141c"/>
+  <g fill="none" stroke="#9be7c4" stroke-width="2" opacity=".55">
+    <circle cx="250" cy="320" r="46"/>
+    <path d="M210 250h80M210 390h80"/>
+    <path d="M196 274c40-28 88-28 128 0M196 366c40 28 88 28 128 0"/>
+    <path d="M184 292c48-36 112-36 164 0M184 348c48 36 112 36 164 0"/>
+    <path d="M172 308c56-42 136-42 196 0M172 332c56 42 136 42 196 0"/>
+  </g>
+  <path d="M360 320h230" stroke="#e7b15a" stroke-width="18" stroke-linecap="round"/>
+  <path d="M360 320 L590 250 L590 390 Z" fill="#e7b15a" opacity=".28"/>
+  <circle cx="250" cy="320" r="10" fill="#e7b15a"/>
+  <text x="48" y="78" fill="#e7b15a" font-family="ui-monospace, monospace" font-size="18" letter-spacing="3">LENS 03</text>
+</svg>

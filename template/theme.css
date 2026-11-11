@@ -1,0 +1,19 @@
+/* Starter theme. Replace this file. The engine's behaviour does not live here. */
+:root {
+  --pa-bg: #e7e2d8;
+  --pa-fg: #1c1a17;
+  --pa-muted: #5e584f;
+  --pa-accent: #1f6b4a;
+  --pa-card: #f7f4ee;
+  --pa-card-fg: #1c1a17;
+  --pa-line: rgba(28, 26, 23, .14);
+  --pa-overlay: rgba(28, 26, 23, .46);
+  --pa-font: "Segoe UI", system-ui, sans-serif;
+  --pa-font-display: Georgia, "Iowan Old Style", serif;
+  --pa-slide: #f7f4ee;
+  --pa-shadow: 0 18px 50px rgba(40, 32, 20, .18);
+  --pa-radius: 12px;
+}
+
+.pa-title { font-weight: 500; }
+.pa-bullets strong { color: var(--pa-accent); }
