@@ -1,0 +1,15 @@
+{
+  "name": "presagent",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "Single-page HTML presentation decks with one shared behaviour engine and a replaceable theme.",
+  "scripts": {
+    "test": "playwright test",
+    "serve": "python3 -m http.server 8000 --bind 127.0.0.1",
+    "shoot": "node scripts/capture.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
