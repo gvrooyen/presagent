@@ -26,5 +26,6 @@ Controls
   N           Speaker notes
   P           Presenter view (allow pop-ups)
   S           Audio output
+  R           Reset speaker timer
   ? or H      Control list
   Esc         Close overlays

@@ -82,7 +82,7 @@ test.describe('history of cinema', () => {
     await page.keyboard.press('?');
     const help = page.locator('#help-overlay');
     await expect(help).toBeVisible();
-    await expect(help.locator('kbd')).toHaveCount(10);
+    await expect(help.locator('kbd')).toHaveCount(11);
     for (const label of [
       'Previous / next slide',
       'Play or pause clip, or next slide',
@@ -91,6 +91,7 @@ test.describe('history of cinema', () => {
       'Speaker notes',
       'Presenter view',
       'Audio output',
+      'Reset speaker timer',
       'This list (H also works)',
       'Close overlays',
       'The screen stays awake while the deck is in fullscreen.'
@@ -218,10 +219,34 @@ test.describe('history of cinema', () => {
 
     await popup.keyboard.press('n');
     await expect(page.locator('#notes')).toBeVisible();
-    await popup.keyboard.press('?');
-    await expect(page.locator('#help-overlay')).toBeVisible();
-    await popup.keyboard.press('Escape');
+
+    await expect(popup.locator('#help-hint')).toHaveText('Press ‘h’ for help');
+    await expect(popup.locator('#help')).toBeHidden();
+    await popup.keyboard.press('h');
+    await expect(popup.locator('#help')).toBeVisible();
+    await expect(popup.locator('#help kbd')).toHaveCount(11);
     await expect(page.locator('#help-overlay')).toBeHidden();
+    await popup.keyboard.press('ArrowRight');
+    await expect(page.locator('#slide')).toHaveAttribute('data-index', '3');
+    await popup.keyboard.press('Escape');
+    await expect(popup.locator('#help')).toBeHidden();
+    await popup.keyboard.press('?');
+    await expect(popup.locator('#help')).toBeVisible();
+    await popup.keyboard.press('h');
+    await expect(popup.locator('#help')).toBeHidden();
+
+    await page.keyboard.press('h');
+    await expect(page.locator('#help-overlay')).toBeVisible();
+    await expect(popup.locator('#help')).toBeHidden();
+    await page.keyboard.press('Escape');
+
+    await expect.poll(async () => popup.locator('#timer').innerText(), { timeout: 4000 }).not.toBe('00:00');
+    await popup.keyboard.press('r');
+    await expect(popup.locator('#timer')).toHaveText('00:00');
+    await expect(page.locator('#toast')).toHaveText('Timer reset');
+    await expect.poll(async () => popup.locator('#timer').innerText(), { timeout: 4000 }).not.toBe('00:00');
+    await page.keyboard.press('r');
+    await expect(popup.locator('#timer')).toHaveText('00:00');
 
     assertClean(errors);
     assertClean(popupErrors);
@@ -362,7 +387,7 @@ test('the template deck navigates and hides its narration', async ({ page }) => 
   await page.keyboard.press('End');
   await expect(page).toHaveURL(/#3$/);
   await page.keyboard.press('?');
-  await expect(page.locator('#help-overlay kbd')).toHaveCount(10);
+  await expect(page.locator('#help-overlay kbd')).toHaveCount(11);
   assertClean(errors);
 });
 

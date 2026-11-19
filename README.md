@@ -46,10 +46,11 @@ To start a different talk, copy `template/` and edit `slides.js` and `theme.css`
 | N | Speaker notes |
 | P | Presenter view (allow pop-ups) |
 | S | Audio output |
+| R | Reset the speaker timer |
 | ? or H | This list |
 | Esc | Close overlays |
 
-The presenter window shows the current section, the cue notes, the next slide, and a timer. Keys pressed there drive the main window. Notes are short cues (`cueNotes`). A longer `narration` field is never shown.
+The presenter window shows the current section, the cue notes, the next slide, and a timer. Keys pressed there drive the main window, except ? or H, which opens the key list over the presenter window itself. Notes are short cues (`cueNotes`). A longer `narration` field is never shown.
 
 ## Browser support
 

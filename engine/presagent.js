@@ -26,6 +26,7 @@
     ['N', 'Speaker notes'],
     ['P', 'Presenter view'],
     ['S', 'Audio output'],
+    ['R', 'Reset speaker timer'],
     ['?', 'This list (H also works)'],
     ['Esc', 'Close overlays']
   ];
@@ -229,7 +230,7 @@
   function presenterDocument(deckTitle, extraCSS) {
     var vars = readThemeVars();
     var keymap = KEYS.map(function (row) {
-      return '<b>' + esc(row[0]) + '</b><span>' + esc(row[1]) + '</span>';
+      return '<kbd>' + esc(row[0]) + '</kbd><span>' + esc(row[1]) + '</span>';
     }).join('');
     var extra = String(extraCSS || '').replace(/<\/style/gi, '');
     return '<!doctype html><html><head><meta charset="utf-8"><title>Presenter \u00b7 ' + esc(deckTitle) + '</title>' +
@@ -239,34 +240,48 @@
       'header{display:flex;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid var(--pa-line,#2a2a2e);align-items:center}' +
       '.timer{font-size:42px;font-weight:800;letter-spacing:-.03em;color:var(--pa-accent,#7ec8ff);font-variant-numeric:tabular-nums}' +
       '.meta{font-size:14px;color:var(--pa-muted,#9aa0ab)}' +
-      'main{display:grid;grid-template-rows:auto auto 1fr auto;gap:14px;padding:22px;height:calc(100vh - 78px);box-sizing:border-box}' +
+      'main{display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:14px;padding:22px;height:calc(100vh - 78px);box-sizing:border-box}' +
       'h1{margin:0;font-family:var(--pa-font-display,Georgia,serif);font-size:28px;line-height:1.2;font-weight:650}' +
-      '.nav{display:flex;gap:10px;align-items:flex-start}' +
+      '.nav{display:flex;gap:10px;align-items:center}' +
       '.nav button{font:inherit;font-weight:700;padding:10px 16px;border-radius:10px;border:1px solid var(--pa-line,#2a2a2e);background:var(--pa-card,#1a1a20);color:var(--pa-card-fg,#f4f4f6);cursor:pointer}' +
       '.notes{font-size:18px;line-height:1.45;overflow:auto;padding:16px;border-radius:var(--pa-radius,14px);background:var(--pa-card,#16161a);border:1px solid var(--pa-line,#2a2a2e);color:var(--pa-card-fg,#f4f4f6)}' +
       '.notes ul{margin:0;padding-left:1.25em;display:grid;gap:10px}' +
       '.notes strong{color:var(--pa-accent,#7ec8ff);font-weight:700}' +
       '.next{padding:14px 16px;border-radius:var(--pa-radius,14px);background:var(--pa-card,#121218);border:1px solid var(--pa-line,#2a2a2e);color:var(--pa-card-fg,#f4f4f6)}' +
       '.next b{color:var(--pa-accent,#7ec8ff)}' +
-      '.hint{font-size:12px;color:var(--pa-muted,#7a808c);line-height:1.5}' +
-      '.keymap{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-top:8px}' +
-      '.keymap b{color:var(--pa-accent,#7ec8ff);font-weight:700}' +
+      '.hint{margin-left:auto;font-size:12px;color:var(--pa-muted,#7a808c)}' +
+      '.help{position:fixed;inset:0;display:grid;place-items:center;padding:24px;background:var(--pa-overlay,rgba(8,9,12,.72))}' +
+      '.help[hidden]{display:none}' +
+      '.help-card{width:min(560px,92vw);max-height:86vh;overflow:auto;box-sizing:border-box;padding:24px 28px;border-radius:var(--pa-radius,14px);background:var(--pa-card,#16161a);border:1px solid var(--pa-line,#2a2a2e);color:var(--pa-card-fg,#f4f4f6)}' +
+      '.help-card h2{margin:0 0 18px;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--pa-accent,#7ec8ff)}' +
+      '.help-card p{margin:16px 0 0;font-size:13px;color:var(--pa-muted,#9aa0ab)}' +
+      '.keymap{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;align-items:center;font-size:15px}' +
+      '.keymap kbd{font:inherit;font-size:13px;font-weight:700;color:var(--pa-accent,#7ec8ff);border:1px solid var(--pa-line,#2a2a2e);border-radius:8px;padding:4px 9px;justify-self:start}' +
       extra +
       '</style></head><body>' +
       '<header><div><div class="meta" id="sec"></div><div class="meta" id="count"></div></div><div class="timer" id="timer">00:00</div></header>' +
       '<main>' +
         '<h1 id="title"></h1>' +
         '<div class="nav"><button type="button" id="prevBtn">\u2190 Prev</button><button type="button" id="nextBtn">Next \u2192</button>' +
-          '<span class="hint">Keys here drive the main deck<span class="keymap">' + keymap + '</span></span></div>' +
+          '<span class="hint" id="help-hint">Press \u2018h\u2019 for help</span></div>' +
         '<div class="notes" id="notes"></div>' +
         '<div class="next"><b>Next</b><div id="next"></div></div>' +
       '</main>' +
+      '<div class="help" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="help-title">' +
+        '<div class="help-card"><h2 id="help-title">Controls</h2><div class="keymap">' + keymap + '</div>' +
+          '<p>Keys pressed here drive the main deck. Esc or H to close.</p></div>' +
+      '</div>' +
       '<script>' +
       'function send(cmd, key){try{if(!window.opener||window.opener.closed)return;window.opener.postMessage({type:"' + MSG_CMD + '",cmd:cmd,key:key},"*");}catch(e){}}' +
       'document.getElementById("prevBtn").onclick=function(){send("prev");};' +
       'document.getElementById("nextBtn").onclick=function(){send("next");};' +
-      'var FORWARD=["ArrowRight","ArrowLeft","ArrowUp","ArrowDown","PageDown","PageUp"," ","Home","End","Escape","Enter","?","h","H","s","S","n","N","p","P","f","F","a","A","r","R","0","1","2","3","4","5","6","7","8","9"];' +
-      'document.addEventListener("keydown",function(event){if(FORWARD.indexOf(event.key)>=0){event.preventDefault();send("key",event.key);}});' +
+      'var help=document.getElementById("help");' +
+      'help.addEventListener("click",function(event){if(event.target===help)help.hidden=true;});' +
+      'var FORWARD=["ArrowRight","ArrowLeft","ArrowUp","ArrowDown","PageDown","PageUp"," ","Home","End","Escape","Enter","s","S","n","N","p","P","f","F","a","A","r","R","0","1","2","3","4","5","6","7","8","9"];' +
+      'document.addEventListener("keydown",function(event){var k=event.key;' +
+        'if(k==="?"||k==="h"||k==="H"){event.preventDefault();help.hidden=!help.hidden;return;}' +
+        'if(!help.hidden){event.preventDefault();if(k==="Escape")help.hidden=true;return;}' +
+        'if(FORWARD.indexOf(k)>=0){event.preventDefault();send("key",k);}});' +
       'window.addEventListener("message",function(ev){var d=ev.data;if(!d||d.type!=="' + MSG_STATE + '")return;' +
         'document.getElementById("sec").textContent=d.section||"";' +
         'document.getElementById("count").textContent=d.index+" / "+d.total;' +
@@ -553,6 +568,12 @@
       presenterWin.document.close();
       setTimeout(syncPresenter, 120);
       toast('Presenter view opened');
+    }
+
+    function resetTimer() {
+      timerStarted = Date.now();
+      syncPresenter();
+      toast('Timer reset');
     }
 
     function closeHelp() {
@@ -853,6 +874,7 @@
 
     function handleDeckKey(event) {
       var key = event.key;
+      if (!sinkOpen && (key === 'r' || key === 'R')) { event.preventDefault(); resetTimer(); return true; }
       if (helpOpen) {
         if (key === 's' || key === 'S') { event.preventDefault(); closeHelp(); openSink(); return true; }
         if (key === 'Escape' || key === '?' || key === 'h' || key === 'H') { event.preventDefault(); closeHelp(); return true; }
